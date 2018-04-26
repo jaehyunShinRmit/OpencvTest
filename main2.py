@@ -5,6 +5,7 @@ import time
 
 import cv2
 from PyQt5 import QtCore
+from PyQt5.QtCore import Qt
 from PyQt5.QtCore import QTimer
 from PyQt5.QtGui import QImage, QPixmap
 from PyQt5.QtWidgets import QDialog, QApplication, QMessageBox
@@ -29,6 +30,8 @@ class FrambotUI(QDialog):
         self.out1 = None
         self.port = 'COM4'
         self.port_2 = 'COM6'
+        self.isPort1connected = False
+        self.isPort2connected = False
         self.feedstartButton.clicked.connect(self.feedstart)
         self.feedendButton.clicked.connect(self.feedend)
         self.feedstartButton_2.clicked.connect(self.feedstart_2)
@@ -47,6 +50,26 @@ class FrambotUI(QDialog):
         self.mySerial.msg.connect(self.textEdit.append)
         self.mySerial_2.msg.connect(self.textEdit_2.append)
 
+    def keyPressEvent(self, e):
+        if e.key() == Qt.Key_Escape:
+            self.close()
+
+        if e.key() == Qt.Key_Up:
+            print('up')
+            msg = 'U'
+        elif e.key() == Qt.Key_Down:
+            print('Down')
+            msg = 'D'
+        elif e.key() == Qt.Key_Left:
+            print('Left')
+            msg = 'L'
+        elif e.key() == Qt.Key_Right:
+            print('Right')
+            msg = 'R'
+        if self.isPort1connected:
+            self.mySerial.sendSerial(msg)
+            print(msg + 'has been sent')
+
     def feedend_2(self):
         self.mySerial_2.terminate()
        #self.mySerial.close()  # run thread for re
@@ -55,7 +78,7 @@ class FrambotUI(QDialog):
         try:
             self.mySerial_2.open()
             self.mySerial_2.start()  # run thread for re
-
+            self.isPort2connected = True
         except serial.SerialException:
             print('Failed to open Comport.')
 
@@ -67,6 +90,7 @@ class FrambotUI(QDialog):
     def sendmsg_2(self):
         msg_2 = self.lineEdit_2.text()
         print(msg_2)
+        self.setFocus()
         self.mySerial_2.sendSerial(msg_2)
 
     def feedend(self):
@@ -77,7 +101,7 @@ class FrambotUI(QDialog):
         try:
             self.mySerial.open()
             self.mySerial.start()  # run thread for re
-
+            self.isPort1connected = True
         except serial.SerialException:
             print('Failed to open Comport.')
 
@@ -89,6 +113,7 @@ class FrambotUI(QDialog):
 
     def sendmsg(self):
         msg = self.lineEdit.text()
+        self.setFocus()
         print(msg)
         self.mySerial.sendSerial(msg)
 
@@ -123,7 +148,7 @@ class FrambotUI(QDialog):
 
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.update_frame)
-        self.timer.start(10)  ## call update_frame function every 5ms
+        self.timer.start(30)  ## call update_frame function every 5ms
 
 
     def update_frame(self):
@@ -143,6 +168,7 @@ class FrambotUI(QDialog):
         self.timer.stop()
 
     def displyImage(self, img, window=1):
+
         qformat = QImage.Format_Indexed8
 
         if len(img.shape) == 3:  # [0]=rows, [1]=cols [2]=channels
@@ -164,15 +190,11 @@ class FrambotUI(QDialog):
             self.imgLabel2.setPixmap(QPixmap.fromImage(outImage))
             self.imgLabel2.setScaledContents(True)
 
-
 app = QApplication(sys.argv)
 window = FrambotUI()
 window.setWindowTitle('Frambot UI test')
 # window.setGeometry(100,100,400,200)
 window.show()
+window.setFocus()
 sys.exit(app.exec_())
 
-# img =cv2.imread('Capture.PNG',1)
-# cv2.imshow('Capture',img)
-# cv2.waitKey()
-# cv2.destroyAllWindows()
