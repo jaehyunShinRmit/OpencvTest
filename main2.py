@@ -98,6 +98,7 @@ class FrambotUI(QDialog):
         if self.Save1:
             self.Save1 = False
             self.out.release()
+            self.out1.release()
         else:
             self.Save1 = True
             self.out = cv2.VideoWriter('outpy.wma', cv2.VideoWriter_fourcc('W', 'M', 'V', '1'), 30, (640, 480))
@@ -108,9 +109,14 @@ class FrambotUI(QDialog):
         if status:
             self.Enabled = True
             self.processButton.setText('Process Stop')
+            msg = 'K12 D10'
+            self.mySerial.sendSerial(msg)
+            self.savevideo()
         else:
             self.Enabled = False
             self.processButton.setText('Process Start')
+            self.out.release()
+            self.out1.release()
 
     def start_webcam(self):
         self.capture = cv2.VideoCapture(0)
