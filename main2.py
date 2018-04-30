@@ -50,25 +50,25 @@ class FrambotUI(QDialog):
         self.mySerial.msg.connect(self.textEdit.append)
         self.mySerial_2.msg.connect(self.textEdit_2.append)
 
-    def keyPressEvent(self, e):
-        if e.key() == Qt.Key_Escape:
-            self.close()
-
-        if e.key() == Qt.Key_Up:
-            print('up')
-            msg = 'U'
-        elif e.key() == Qt.Key_Down:
-            print('Down')
-            msg = 'D'
-        elif e.key() == Qt.Key_Left:
-            print('Left')
-            msg = 'L'
-        elif e.key() == Qt.Key_Right:
-            print('Right')
-            msg = 'R'
-        if self.isPort1connected:
-            self.mySerial.sendSerial(msg)
-            print(msg + 'has been sent')
+    # def keyPressEvent(self, e):
+    #     if e.key() == Qt.Key_Escape:
+    #         self.close()
+    #
+    #     if e.key() == Qt.Key_Up:
+    #         print('up')
+    #         msg = 'U'
+    #     elif e.key() == Qt.Key_Down:
+    #         print('Down')
+    #         msg = 'D'
+    #     elif e.key() == Qt.Key_Left:
+    #         print('Left')
+    #         msg = 'L'
+    #     elif e.key() == Qt.Key_Right:
+    #         print('Right')
+    #         msg = 'R'
+    #     if self.isPort1connected:
+    #         self.mySerial.sendSerial(msg)
+    #         print(msg + 'has been sent')
 
     def feedend_2(self):
         self.mySerial_2.terminate()
@@ -88,10 +88,13 @@ class FrambotUI(QDialog):
         print('Current comport is :' + self.comportBox.currentText())
 
     def sendmsg_2(self):
-        msg_2 = self.lineEdit_2.text()
-        print(msg_2)
-        self.setFocus()
-        self.mySerial_2.sendSerial(msg_2)
+        try:
+            msg_2 = self.lineEdit_2.text()
+            print(msg_2)
+            self.setFocus()
+            self.mySerial_2.sendSerial(msg_2)
+        except serial.SerialException:
+            print('Port2 - Failed to send a message ')
 
     def feedend(self):
         self.mySerial.terminate()
@@ -112,34 +115,48 @@ class FrambotUI(QDialog):
         print('Current comport is :' + self.comportBox.currentText())
 
     def sendmsg(self):
-        msg = self.lineEdit.text()
-        self.setFocus()
-        print(msg)
-        self.mySerial.sendSerial(msg)
+        try:
+            msg = self.lineEdit.text()
+            self.setFocus()
+            print(msg)
+            self.mySerial.sendSerial(msg)
+        except serial.SerialException:
+            print('Port1 - Failed to send a message ')
+
 
 
     def savevideo(self):
-
         if self.Save1:
             self.Save1 = False
             self.out.release()
             self.out1.release()
+            print('Stop Recording')
         else:
+            localtime = time.localtime(time.time())
+            video1 = 'FrontView_' + str(localtime.tm_hour) + str(localtime.tm_min) + str(localtime.tm_sec) +'.wma'
+            print(video1)
+            video2 = 'TopView_' + str(localtime.tm_hour) + str(localtime.tm_min) + str(localtime.tm_sec) +'.wma'
+            print(video2)
             self.Save1 = True
-            self.out = cv2.VideoWriter('out1.wma', cv2.VideoWriter_fourcc('W', 'M', 'V', '1'), 30, (640, 480))
-            self.out1 = cv2.VideoWriter('out2.wma', cv2.VideoWriter_fourcc('W', 'M', 'V', '1'), 30, (640, 480))
-            print('save button pressed')
-
+            try:
+                self.out = cv2.VideoWriter(video1, cv2.VideoWriter_fourcc('W', 'M', 'V', '1'), 30, (640, 480))
+                self.out1 = cv2.VideoWriter(video2, cv2.VideoWriter_fourcc('W', 'M', 'V', '1'), 30, (640, 480))
+                print('Video Recording')
+            except:
+                print('Camera has not been initiated')
     def process(self, status):
         if status:
             self.Enabled = True
-            self.processButton.setText('Process Stop')
+            self.processButton.setText('Recording')
             msg = 'K12 D20'
-            self.mySerial.sendSerial(msg)
-            self.savevideo()
+            try:
+                self.mySerial.sendSerial(msg)
+                self.savevideo()
+            except serial.SerialException:
+                print('Port1 - Failed to send a message ')
         else:
             self.Enabled = False
-            self.processButton.setText('Process Start')
+            self.processButton.setText('Stop')
             self.out.release()
             self.out1.release()
 

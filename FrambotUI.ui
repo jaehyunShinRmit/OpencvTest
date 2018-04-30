@@ -16,14 +16,14 @@
   <widget class="QPushButton" name="processButton">
    <property name="geometry">
     <rect>
-     <x>310</x>
+     <x>320</x>
      <y>50</y>
      <width>81</width>
      <height>31</height>
     </rect>
    </property>
    <property name="text">
-    <string>Process</string>
+    <string>Move!!</string>
    </property>
   </widget>
   <widget class="QPushButton" name="saveButton">
@@ -31,12 +31,12 @@
     <rect>
      <x>220</x>
      <y>50</y>
-     <width>81</width>
+     <width>91</width>
      <height>31</height>
     </rect>
    </property>
    <property name="text">
-    <string>Save</string>
+    <string>Video Recording</string>
    </property>
   </widget>
   <widget class="QPushButton" name="startButton">
@@ -62,7 +62,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>Stop/Pause</string>
+    <string>End Webcam</string>
    </property>
   </widget>
   <widget class="QLabel" name="imgLabel">
@@ -285,6 +285,19 @@
      <width>641</width>
      <height>221</height>
     </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>530</x>
+     <y>20</y>
+     <width>161</width>
+     <height>61</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;1. Start Webcam &lt;/p&gt;&lt;p&gt;2. Connect Serical Port &lt;/p&gt;&lt;p&gt;3. Move&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
   </widget>
  </widget>
