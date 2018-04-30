@@ -126,15 +126,15 @@ class FrambotUI(QDialog):
             self.out1.release()
         else:
             self.Save1 = True
-            self.out = cv2.VideoWriter('outpy.wma', cv2.VideoWriter_fourcc('W', 'M', 'V', '1'), 30, (640, 480))
-            self.out1 = cv2.VideoWriter('outpy1.wma', cv2.VideoWriter_fourcc('W', 'M', 'V', '1'), 30, (640, 480))
+            self.out = cv2.VideoWriter('out1.wma', cv2.VideoWriter_fourcc('W', 'M', 'V', '1'), 30, (640, 480))
+            self.out1 = cv2.VideoWriter('out2.wma', cv2.VideoWriter_fourcc('W', 'M', 'V', '1'), 30, (640, 480))
             print('save button pressed')
 
     def process(self, status):
         if status:
             self.Enabled = True
             self.processButton.setText('Process Stop')
-            msg = 'K12 D1'
+            msg = 'K12 D20'
             self.mySerial.sendSerial(msg)
             self.savevideo()
         else:
