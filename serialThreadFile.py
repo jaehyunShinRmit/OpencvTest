@@ -12,6 +12,7 @@ class serialThreadClass(QThread):
         self.seriport.timeout = 1
         self.seriport.baudrate = 115200
         self.seriport.port = 'COM4'
+        self.message = None
 
     def open(self):
         self.seriport.open()
@@ -23,10 +24,14 @@ class serialThreadClass(QThread):
         while self.seriport.readable():
             veri = self.seriport.readline()
             self.msg.emit(str(veri))
-            print(veri)
+            self.message = str(veri)
+            #print(veri)
+
 
     def sendSerial(self,message):
         arr = bytes(message+'\n', 'utf-8')
         self.seriport.write(arr)
         #.seriport.write(b'K61\n') #one byte
 
+    def getmsgstr(self):
+        return str(self.message)
