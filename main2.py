@@ -36,6 +36,10 @@ class FrambotUI(QDialog):
         self.port_2 = 'COM6'
         self.isPort1connected = False
         self.isPort2connected = False
+        self.pushButton_Up.clicked.connect(self.advance)
+        self.pushButton_Down.clicked.connect(self.retreat)
+        self.pushButton_Left.clicked.connect(self.turnLeft)
+        self.pushButton_Right.clicked.connect(self.turnRight)
         self.feedstartButton.clicked.connect(self.feedstart)
         self.feedendButton.clicked.connect(self.feedend)
         self.feedstartButton_2.clicked.connect(self.feedstart_2)
@@ -73,6 +77,34 @@ class FrambotUI(QDialog):
     #     if self.isPort1connected:
     #         self.mySerial.sendSerial(msg)
     #         print(msg + 'has been sent')
+
+    def advance(self):
+        msg = 'K11 D2'
+        try:
+            self.mySerial.sendSerial(msg)
+        except serial.SerialException:
+            print('Port1 - Failed to send a message ')
+
+    def retreat(self):
+        msg = 'K13 D2'
+        try:
+            self.mySerial.sendSerial(msg)
+        except serial.SerialException:
+            print('Port1 - Failed to send a message ')
+
+    def turnLeft(self):
+        msg = 'K14 D2'
+        try:
+            self.mySerial.sendSerial(msg)
+        except serial.SerialException:
+            print('Port1 - Failed to send a message ')
+
+    def turnRight(self):
+        msg = 'K15 D2'
+        try:
+            self.mySerial.sendSerial(msg)
+        except serial.SerialException:
+            print('Port1 - Failed to send a message ')
 
     def feedend_2(self):
         self.mySerial_2.terminate()
@@ -164,7 +196,7 @@ class FrambotUI(QDialog):
         if status:
             self.Enabled = True
             self.processButton.setText('Recording')
-            msg = 'K12 D20'
+            msg = 'K12 D10'
             try:
                 self.mySerial.sendSerial(msg)
                 self.savevideo()
@@ -172,6 +204,11 @@ class FrambotUI(QDialog):
                 print('Port1 - Failed to send a message ')
         else:
             self.Enabled = False
+            msg = 'K10'
+            try:
+                self.mySerial.sendSerial(msg)
+            except serial.SerialException:
+                print('Port1 - Failed to send a message ')
             self.processButton.setText('Stop')
             self.out.release()
             self.out1.release()
@@ -187,7 +224,7 @@ class FrambotUI(QDialog):
 
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.update_frame)
-        self.timer.start(100)  #call update_frame function every 10ms
+        self.timer.start(100)  #call update_frame function every 100ms
 
     def update_frame(self):
         # 1. Update frame for both cameras
