@@ -50,58 +50,6 @@
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <widget class="QPushButton" name="processButton">
-   <property name="geometry">
-    <rect>
-     <x>400</x>
-     <y>50</y>
-     <width>121</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Move &amp; Capture!!</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="saveButton">
-   <property name="geometry">
-    <rect>
-     <x>220</x>
-     <y>50</y>
-     <width>161</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Data Save with Joystick</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="startButton">
-   <property name="geometry">
-    <rect>
-     <x>40</x>
-     <y>50</y>
-     <width>81</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Start Webcam</string>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="stopButton">
-   <property name="geometry">
-    <rect>
-     <x>130</x>
-     <y>50</y>
-     <width>81</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>End Webcam</string>
-   </property>
-  </widget>
   <widget class="QLabel" name="imgLabel">
    <property name="geometry">
     <rect>
@@ -327,7 +275,7 @@
   <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
-     <x>530</x>
+     <x>770</x>
      <y>20</y>
      <width>161</width>
      <height>61</height>
@@ -870,6 +818,46 @@
      <height>30</height>
     </size>
    </property>
+  </widget>
+  <widget class="QWidget" name="">
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>50</y>
+     <width>711</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout_3">
+    <item>
+     <widget class="QPushButton" name="startButton">
+      <property name="text">
+       <string>Start Webcam</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="stopButton">
+      <property name="text">
+       <string>End Webcam</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="saveButton">
+      <property name="text">
+       <string>Data Save with Joystick</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="processButton">
+      <property name="text">
+       <string>Move &amp; Capture!!</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
   </widget>
   <zorder>processButton</zorder>
   <zorder>saveButton</zorder>
