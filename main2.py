@@ -164,8 +164,13 @@ class FrambotUI(QDialog):
         else:
             ##Create video file name
             localtime = time.localtime(time.time())
-            video1 = 'FrontView_' + str(localtime.tm_hour) + str(localtime.tm_min) + str(localtime.tm_sec) + '.wma'
-            video2 = 'TopView_' + str(localtime.tm_hour) + str(localtime.tm_min) + str(localtime.tm_sec) + '.wma'
+            if localtime.tm_min < 10:
+                minuteWithZero = '0' + str(localtime.tm_min)
+            else:
+                minuteWithZero =  str(localtime.tm_min)
+
+            video1 = 'FrontView_' + str(localtime.tm_hour) + minuteWithZero + str(localtime.tm_sec) + '.wma'
+            video2 = 'TopView_' + str(localtime.tm_hour) + minuteWithZero + str(localtime.tm_sec) + '.wma'
 
             ##Create path, directory for saving
             directory = str(localtime.tm_hour) + str(localtime.tm_min) + str(localtime.tm_sec)
@@ -218,7 +223,7 @@ class FrambotUI(QDialog):
         self.capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
         self.capture.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
 
-        self.capture1 = cv2.VideoCapture(0)
+        self.capture1 = cv2.VideoCapture(1)
         self.capture1.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
         self.capture1.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
 
