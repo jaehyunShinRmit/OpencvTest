@@ -38,19 +38,19 @@ class FrambotUI(QDialog):
         self.isPort2connected = False
         self.pushButton_Up.clicked.connect(self.advance)
         self.pushButton_Down.clicked.connect(self.retreat)
-        self.pushButton_Left.clicked.connect(self.turnLeft)
-        self.pushButton_Right.clicked.connect(self.turnRight)
-        self.feedstartButton.clicked.connect(self.feedstart)
-        self.feedendButton.clicked.connect(self.feedend)
-        self.feedstartButton_2.clicked.connect(self.feedstart_2)
-        self.feedendButton_2.clicked.connect(self.feedend_2)
+        self.pushButton_Left.clicked.connect(self.turn_left)
+        self.pushButton_Right.clicked.connect(self.turn_right)
+        self.feedstartButton.clicked.connect(self.feed_start)
+        self.feedendButton.clicked.connect(self.feed_end)
+        self.feedstartButton_2.clicked.connect(self.feed_start_2)
+        self.feedendButton_2.clicked.connect(self.feed_end_2)
         self.startButton.clicked.connect(self.start_webcam)  ## add function ID
         self.stopButton.clicked.connect(self.stop_webcam)
         self.processButton.toggled.connect(self.process)
-        self.saveButton.clicked.connect(self.savevideo)
+        self.saveButton.clicked.connect(self.save_video)
         self.processButton.setCheckable(True)
-        self.sendButton.clicked.connect(self.sendmsg)
-        self.sendButton_2.clicked.connect(self.sendmsg_2)
+        self.sendButton.clicked.connect(self.send_msg)
+        self.sendButton_2.clicked.connect(self.send_msg_2)
         self.comportBox.activated.connect(self.update_comport)
         self.comportBox_2.activated.connect(self.update_comport_2)
         self.mySerial = serialThreadClass()
@@ -58,27 +58,11 @@ class FrambotUI(QDialog):
         self.mySerial.msg.connect(self.textEdit.append)
         self.mySerial_2.msg.connect(self.textEdit_2.append)
 
-    # def keyPressEvent(self, e):
-    #     if e.key() == Qt.Key_Escape:
-    #         self.close()
-    #
-    #     if e.key() == Qt.Key_Up:
-    #         print('up')
-    #         msg = 'U'
-    #     elif e.key() == Qt.Key_Down:
-    #         print('Down')
-    #         msg = 'D'
-    #     elif e.key() == Qt.Key_Left:
-    #         print('Left')
-    #         msg = 'L'
-    #     elif e.key() == Qt.Key_Right:
-    #         print('Right')
-    #         msg = 'R'
-    #     if self.isPort1connected:
-    #         self.mySerial.sendSerial(msg)
-    #         print(msg + 'has been sent')
-
     def advance(self):
+        """
+        Sending Msg to Arudino for advance
+
+        """
         msg = 'K11 D2'
         try:
             self.mySerial.sendSerial(msg)
@@ -92,24 +76,24 @@ class FrambotUI(QDialog):
         except serial.SerialException:
             print('Port1 - Failed to send a message ')
 
-    def turnLeft(self):
+    def turn_left(self):
         msg = 'K14 D2'
         try:
             self.mySerial.sendSerial(msg)
         except serial.SerialException:
             print('Port1 - Failed to send a message ')
 
-    def turnRight(self):
+    def turn_right(self):
         msg = 'K15 D2'
         try:
             self.mySerial.sendSerial(msg)
         except serial.SerialException:
             print('Port1 - Failed to send a message ')
 
-    def feedend_2(self):
+    def feed_end_2(self):
         self.mySerial_2.terminate()
 
-    def feedstart_2(self):
+    def feed_start_2(self):
         try:
             self.mySerial_2.open()
             self.mySerial_2.start()  # run thread
@@ -122,7 +106,7 @@ class FrambotUI(QDialog):
         self.mySerial_2.updateport(self.port_2)
         print('Current port for comport2 is :' + self.comportBox.currentText())
 
-    def sendmsg_2(self):
+    def send_msg_2(self):
         try:
             msg_2 = self.lineEdit_2.text()
             # self.setFocus() # For keyboard control
@@ -130,10 +114,10 @@ class FrambotUI(QDialog):
         except serial.SerialException:
             print('Port2 - Failed to send a message ')
 
-    def feedend(self):
+    def feed_end(self):
         self.mySerial.terminate()
 
-    def feedstart(self):
+    def feed_start(self):
         try:
             self.mySerial.open()
             self.mySerial.start()  # run thread
@@ -146,7 +130,7 @@ class FrambotUI(QDialog):
         self.mySerial.updateport(self.port)
         print('Current port for comport1 is :' + self.comportBox.currentText())
 
-    def sendmsg(self):
+    def send_msg(self):
         try:
             msg = self.lineEdit.text()
             # self.setFocus() # For keyboard control
@@ -154,7 +138,7 @@ class FrambotUI(QDialog):
         except serial.SerialException:
             print('Port1 - Failed to send a message ')
 
-    def savevideo(self):
+    def save_video(self):
         # Save Data Button
         if self.Save1:
             self.Save1 = False
@@ -164,8 +148,13 @@ class FrambotUI(QDialog):
         else:
             ##Create video file name
             localtime = time.localtime(time.time())
-            video1 = 'FrontView_' + str(localtime.tm_hour) + str(localtime.tm_min) + str(localtime.tm_sec) + '.wma'
-            video2 = 'TopView_' + str(localtime.tm_hour) + str(localtime.tm_min) + str(localtime.tm_sec) + '.wma'
+            if localtime.tm_min < 10:
+                minuteWithZero = '0' + str(localtime.tm_min)
+            else:
+                minuteWithZero =  str(localtime.tm_min)
+
+            video1 = 'FrontView_' + str(localtime.tm_hour) + minuteWithZero + str(localtime.tm_sec) + '.wma'
+            video2 = 'TopView_' + str(localtime.tm_hour) + minuteWithZero + str(localtime.tm_sec) + '.wma'
 
             ##Create path, directory for saving
             directory = str(localtime.tm_hour) + str(localtime.tm_min) + str(localtime.tm_sec)
@@ -182,13 +171,13 @@ class FrambotUI(QDialog):
             with myFile:
                 self.writer = csv.writer(myFile)
                 self.writer.writerow(header)
-            #preparing saving. The image data are saved in update_frame()
-            self.Save1 = True
             try:
                 self.out = cv2.VideoWriter(video1, cv2.VideoWriter_fourcc('W', 'M', 'V', '1'), 30, (640, 480))
                 self.out1 = cv2.VideoWriter(video2, cv2.VideoWriter_fourcc('W', 'M', 'V', '1'), 30, (640, 480))
                 print('Video Recorders have been created')
-            except:
+                # preparing saving. The image data are saved in update_frame()
+                self.Save1 = True
+            except cv2.error:
                 print('Failed to create Camera has not been initiated')
 
     def process(self, status):
@@ -199,7 +188,7 @@ class FrambotUI(QDialog):
             msg = 'K12 D10'
             try:
                 self.mySerial.sendSerial(msg)
-                self.savevideo()
+                self.save_video()
             except serial.SerialException:
                 print('Port1 - Failed to send a message ')
         else:
@@ -218,50 +207,62 @@ class FrambotUI(QDialog):
         self.capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
         self.capture.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
 
-        self.capture1 = cv2.VideoCapture(0)
+        self.capture1 = cv2.VideoCapture(1)
         self.capture1.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
         self.capture1.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
 
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.update_frame)
-        self.timer.start(100)  #call update_frame function every 100ms
+        self.timer.start(200)  #call update_frame function every 200ms 5hz
 
     def update_frame(self):
         # 1. Update frame for both cameras
         # 2. Capture images when required
         # 3. Record videos when required
-        ret, self.image = self.capture.read()
+        try:
+            ret, self.image = self.capture.read()
+        except cv2.error:
+            print('Failed to capture images from Camera0')
         self.image = cv2.flip(self.image, 1)
-        self.displyImage(self.image, 1)
+        self.disply_image(self.image, 1)
 
-        ret1, self.image1 = self.capture1.read()
+        try:
+            ret1, self.image1 = self.capture1.read()
+        except cv2.error:
+            print('Failed to capture images from Camera1')
         self.image1 = cv2.flip(self.image1, 1)
-        self.displyImage(self.image1, 2)
+        self.disply_image(self.image1, 2)
 
         if self.Save1:
+            print('Saving?')
             a = self.mySerial.getmsgstr()
             b = a[2:-5]  #Remove b' at the Front and /r/n at the End
-            self.ImageNumber = self.ImageNumber + 1 #number of image captured
-            front_image_name = 'FrontImage' + str(self.ImageNumber)
-            top_image_name = 'TopImage' + str(self.ImageNumber)
-            front_image_path = os.path.join(self.path, front_image_name) + '.png'
-            top_image_path = os.path.join(self.path, top_image_name) + '.png'
-            csvout = front_image_name + ',' + top_image_name + ',' + b
-            mylist = csvout.split(',') # Imagename1 Imagename2 L/R1 L/R2 F/B1 F/B2 Roll Pitch Heading
-            csv_name = os.path.join(self.path, 'Data.csv')
-            myFile = open(csv_name, 'a+', newline='')
-            with myFile:
-                self.writer = csv.writer(myFile)
-                self.writer.writerow(mylist)
-            cv2.imwrite(front_image_path, self.image) #save png Image
-            cv2.imwrite(top_image_path, self.image1)  #save png Image
-            #Save Video
-            self.out.write(self.image)
-            self.out1.write(self.image1)
+            msg_list=b.split(',')
+            print('number {}'.format(msg_list[2]+msg_list[3])/2 )
+            if (msg_list[2]+msg_list[3])/2 > 130.0: ##save image and data only robot is moving forward.
+                print('number {}'.format(msg_list[2] + msg_list[3]) / 2)
+                self.ImageNumber = self.ImageNumber + 1 #number of image captured
+                front_image_name = 'FrontImage' + str(self.ImageNumber)
+                top_image_name   = 'TopImage' + str(self.ImageNumber)
+                front_image_path = os.path.join(self.path, front_image_name) + '.png'
+                top_image_path   = os.path.join(self.path, top_image_name) + '.png'
+                csv_out  = front_image_name + ',' + top_image_name + ',' + b
+                my_list  = csv_out.split(',') # Imagename1 Imagename2 L/R1 L/R2 F/B1 F/B2 Roll Pitch Heading
+                csv_name = os.path.join(self.path, 'Data.csv')
+                myFile   = open(csv_name, 'a+', newline='')
+                with myFile:
+                    self.writer = csv.writer(myFile)
+                    self.writer.writerow(my_list)
+                cv2.imwrite(front_image_path, self.image) #save png Image
+                cv2.imwrite(top_image_path, self.image1)  #save png Image
+                #Save Video
+                self.out.write(self.image)
+                self.out1.write(self.image1)
+
     def stop_webcam(self):
         self.timer.stop()
 
-    def displyImage(self, img, window=1):
+    def disply_image(self, img, window=1):
 
         qformat = QImage.Format_Indexed8
 
