@@ -819,7 +819,7 @@
     </size>
    </property>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>40</x>
@@ -851,18 +851,22 @@
      </widget>
     </item>
     <item>
-     <widget class="QPushButton" name="processButton">
+     <widget class="QPushButton" name="indexButton">
       <property name="text">
-       <string>Move &amp; Capture!!</string>
+       <string>Index_UP!</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="indexDownButton">
+      <property name="text">
+       <string>Down</string>
       </property>
      </widget>
     </item>
    </layout>
   </widget>
-  <zorder>processButton</zorder>
-  <zorder>saveButton</zorder>
-  <zorder>startButton</zorder>
-  <zorder>stopButton</zorder>
+  <zorder>layoutWidget</zorder>
   <zorder>imgLabel</zorder>
   <zorder>imgLabel2</zorder>
   <zorder>textEdit</zorder>
@@ -871,7 +875,6 @@
   <zorder>textEdit_2</zorder>
   <zorder>label</zorder>
   <zorder>pushButton_Up</zorder>
-  <zorder>pushButton_Down</zorder>
   <zorder>pushButton_Left</zorder>
   <zorder>pushButton_Right</zorder>
   <zorder>pushButton_Down</zorder>

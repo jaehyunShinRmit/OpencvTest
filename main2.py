@@ -20,6 +20,7 @@ class FrambotUI(QDialog):
     def __init__(self):
         super(FrambotUI, self).__init__()
         loadUi('FrambotUI.ui', self)
+        self.index= 0
         self.image = None
         self.image1 = None
         self.writer = None
@@ -46,9 +47,9 @@ class FrambotUI(QDialog):
         self.feedendButton_2.clicked.connect(self.feed_end_2)
         self.startButton.clicked.connect(self.start_webcam)  ## add function ID
         self.stopButton.clicked.connect(self.stop_webcam)
-        self.processButton.toggled.connect(self.process)
+        self.indexButton.clicked.connect(self.index_up)
+        self.indexDownButton.clicked.connect(self.index_down)
         self.saveButton.clicked.connect(self.save_video)
-        self.processButton.setCheckable(True)
         self.sendButton.clicked.connect(self.send_msg)
         self.sendButton_2.clicked.connect(self.send_msg_2)
         self.comportBox.activated.connect(self.update_comport)
@@ -166,8 +167,9 @@ class FrambotUI(QDialog):
                 os.makedirs(self.path)
             ##Write Header for CSV file
             myFile = open(csvName, 'w+', newline='')
-            header = ['FrontImageName', 'TopImageName', 'Left/Right1', 'Left/Right2', 'Front/Back1', 'Front/Back2',
-                      'Roll(rad)', 'Pitch(rad)', 'Heading(rad)']
+            header = ['Index','FrontImageName', 'TopImageName', 'FrontBack1', 'FrontBack2', 'LeftRight1', 'LeftRigh2',
+                      'ax(ms2)', 'ay(ms2)', 'az(ms2)','gx(rad/s)','gy(rad/s)','gz(rad/s)',
+                      'mx(nT)','my(nT)','mz(nT)', 'latitude' ,'longitude','altitude','Heading(IMU(rad))','Heading(GPS)']
             with myFile:
                 self.writer = csv.writer(myFile)
                 self.writer.writerow(header)
@@ -180,34 +182,32 @@ class FrambotUI(QDialog):
             except cv2.error:
                 print('Failed to create Camera has not been initiated')
 
-    def process(self, status):
-        # Move and Capture Button
-        if status:
-            self.Enabled = True
-            self.processButton.setText('Recording')
-            msg = 'K12 D10'
-            try:
-                self.mySerial.sendSerial(msg)
-                self.save_video()
-            except serial.SerialException:
-                print('Port1 - Failed to send a message ')
-        else:
-            self.Enabled = False
-            msg = 'K10'
-            try:
-                self.mySerial.sendSerial(msg)
-            except serial.SerialException:
-                print('Port1 - Failed to send a message ')
-            self.processButton.setText('Stop')
-            self.out.release()
-            self.out1.release()
+    def index_up(self):
+        """
+        update index
+        used in go-stop-go testing
+        used in initial soil sensor testing
+        :return:
+        """
+        self.index = self.index + 1
+        self.indexButton.setText(str(self.index))
+
+    def index_down(self):
+        """
+        decrease index
+        used in go-stop-go testing
+        used in initial soil sensor testing
+        :return:
+        """
+        self.index = self.index - 1
+        self.indexButton.setText(str(self.index))
 
     def start_webcam(self):
         self.capture = cv2.VideoCapture(0)
         self.capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
         self.capture.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
 
-        self.capture1 = cv2.VideoCapture(1)
+        self.capture1 = cv2.VideoCapture(0)
         self.capture1.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
         self.capture1.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
 
@@ -234,19 +234,17 @@ class FrambotUI(QDialog):
         self.disply_image(self.image1, 2)
 
         if self.Save1:
-            print('Saving?')
             a = self.mySerial.getmsgstr()
             b = a[2:-5]  #Remove b' at the Front and /r/n at the End
             msg_list=b.split(',')
-            print('number {}'.format(msg_list[2]+msg_list[3])/2 )
-            if (msg_list[2]+msg_list[3])/2 > 130.0: ##save image and data only robot is moving forward.
-                print('number {}'.format(msg_list[2] + msg_list[3]) / 2)
+            threshold = (int(msg_list[0]) + int(msg_list[1])) / 2
+            if threshold> 140.0: ##save image and data only robot is moving forward.
                 self.ImageNumber = self.ImageNumber + 1 #number of image captured
                 front_image_name = 'FrontImage' + str(self.ImageNumber)
                 top_image_name   = 'TopImage' + str(self.ImageNumber)
                 front_image_path = os.path.join(self.path, front_image_name) + '.png'
                 top_image_path   = os.path.join(self.path, top_image_name) + '.png'
-                csv_out  = front_image_name + ',' + top_image_name + ',' + b
+                csv_out  = str(self.index) + ',' + front_image_name + ',' + top_image_name + ',' + b
                 my_list  = csv_out.split(',') # Imagename1 Imagename2 L/R1 L/R2 F/B1 F/B2 Roll Pitch Heading
                 csv_name = os.path.join(self.path, 'Data.csv')
                 myFile   = open(csv_name, 'a+', newline='')
