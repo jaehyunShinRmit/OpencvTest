@@ -207,7 +207,7 @@ class FrambotUI(QDialog):
         self.capture.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
         self.capture.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
 
-        self.capture1 = cv2.VideoCapture(0)
+        self.capture1 = cv2.VideoCapture(1)
         self.capture1.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
         self.capture1.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
 
